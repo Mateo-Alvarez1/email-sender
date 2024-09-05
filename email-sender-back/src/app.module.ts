@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsModule } from './clients/clients.module';
+import { MailModule } from './mail/mail.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -18,6 +19,7 @@ import { ClientsModule } from './clients/clients.module';
     }),
     AuthModule,
     ClientsModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],
