@@ -1,9 +1,9 @@
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { MailService } from './mail.service';
-import { CreateMailDto } from './dto/create-mail.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateMailRequestDto } from './dto/mail-request.dto';
 
 @Controller('mail')
 export class MailController {
@@ -11,7 +11,10 @@ export class MailController {
 
   @Post()
   @UseGuards(AuthGuard())
-  create(@GetUser() user: User, @Body() createMailDto: CreateMailDto) {
-    return this.mailService.create(user, createMailDto);
+  create(
+    @GetUser() user: User,
+    @Body() createMailRequestDto: CreateMailRequestDto,
+  ) {
+    return this.mailService.create(user, createMailRequestDto);
   }
 }
