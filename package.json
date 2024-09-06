@@ -1,8 +1,0 @@
-{
-	"devDependencies": {
-		"@types/uuid": "^10.0.0"
-	},
-	"dependencies": {
-		"resend": "^4.0.0"
-	}
-}

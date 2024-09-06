@@ -9,5 +9,5 @@ export class CreateMailDto {
   subject: string;
 
   @IsString()
-  content: string;
+  text: string;
 }

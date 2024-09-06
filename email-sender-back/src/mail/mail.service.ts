@@ -1,32 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMailDto } from './dto/create-mail.dto';
-import { Resend } from 'resend';
+import * as nodemailer from 'nodemailer';
+import { ConfigService } from '@nestjs/config';
+import { User } from 'src/auth/entities/user.entity';
+import { log } from 'node:console';
 
 @Injectable()
 export class MailService {
-  private readonly resend: Resend;
+  private transporter: any;
 
-  constructor() {
-    this.resend = new Resend(process.env.API_KEY);
+  constructor(private readonly configService: ConfigService) {
+    this.transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: 'mateoalvarez384@gmail.com',
+        pass: configService.get('EMAIL_PASSWORD'),
+      },
+    });
   }
-  async create(createMailDto: CreateMailDto) {
+  async create(user: User, createMailDto: CreateMailDto) {
+    console.log(user.email);
+
     try {
-      const { data, error } = await this.resend.emails.send({
-        from: 'Mateo <onboarding@resend.dev>',
-        to: createMailDto.to,
+      const info = await this.transporter.sendMail({
+        from: `"${user.name} ${user.lastName}" ${user.email}`,
+        to: createMailDto.to.join(', '),
         subject: createMailDto.subject,
-        html: createMailDto.content,
+        text: createMailDto.text,
       });
-
-      if (error) {
-        console.error('Resend API error:', error);
-        throw new Error(`Error sending email: ${JSON.stringify(error)}`);
-      }
-
-      return data;
+      return info;
     } catch (error) {
-      console.error('Error sending email:', error.message);
-      throw new Error('Failed to send email');
+      console.error('Error al enviar correo:', error);
+      throw error;
     }
   }
 }
